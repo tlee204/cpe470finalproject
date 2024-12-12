@@ -59,35 +59,56 @@ void RespondToCommand(tflite::ErrorReporter* error_reporter,
       TF_LITE_REPORT_ERROR(error_reporter, "Heard %s (%d) @%dms", found_command,
                          score, current_time);
       last_command_time = current_time;
-      digitalWrite(LEDG, LOW);  // Green for yes 
-      marv_flag = 1; 
+      digitalWrite(LEDG, LOW);  // Green for Marv 
+      marv_flag = 1;  
+      digitalWrite(3, HIGH);  
+      delay(500); 
+      digitalWrite(3, LOW); 
+      delay(500); 
     }
 
     if (found_command[0] == 'n' && marv_flag == 1 && no_flag == 0) { 
       TF_LITE_REPORT_ERROR(error_reporter, "Heard %s (%d) @%dms", found_command,
                          score, current_time);
       last_command_time = current_time;
-      digitalWrite(LEDR, LOW);  // Red for no 
-      no_flag = 1; 
+      digitalWrite(LEDR, LOW);  // Red for No 
+      no_flag = 1;  
+      digitalWrite(3, HIGH);  
+      delay(500); 
+      digitalWrite(3, LOW); 
+      delay(500); 
     }
 
     if (found_command[0] == 'h' && marv_flag == 1 && no_flag == 1) { 
       TF_LITE_REPORT_ERROR(error_reporter, "Heard %s (%d) @%dms", found_command,
                          score, current_time);
       last_command_time = current_time;
-      digitalWrite(LEDB, LOW);  // Blue for unknown 
+      digitalWrite(LEDB, LOW);  // Blue for House 
       marv_flag = 0; 
       no_flag = 0;  
-      digitalWrite(3, HIGH);  
-      delay(500); 
-      digitalWrite(3, LOW); 
-      delay(500); 
-      digitalWrite(3, HIGH);  
-      delay(500); 
-      digitalWrite(3, LOW); 
-      delay(500); 
+        
+      for (int i = 0; i < 3; i++) {
+        digitalWrite(3, HIGH);
+        delay(500);
+        digitalWrite(3, LOW);
+        delay(500);
+      }
+    
+      // Second pattern: 100ms HIGH-LOW cycles repeated multiple times
+      for (int i = 0; i < 50; i++) { 
+        digitalWrite(3, HIGH);
+        delay(100);
+        digitalWrite(3, LOW);
+        delay(100);
+      }
+      // Third pattern: End with two 500ms HIGH-LOW cycles
+      for (int i = 0; i < 2; i++) {
+        digitalWrite(3, HIGH);
+        delay(500);
+        digitalWrite(3, LOW);
+        delay(500);
+      }
     }
-  }
 
   // If last_command_time is non-zero but was >3 seconds ago, zero it
   // and switch off the LED.
